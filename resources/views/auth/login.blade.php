@@ -16,6 +16,8 @@
           <div class="login-form">
             <form method="POST" action="{{route('login')}}" name="login-form" class="needs-validation" novalidate="">
                 @csrf
+              <input type="hidden" name="login_type" value="{{ $loginType ?? 'customer' }}">
+              <h4 class="mb-4">{{ ($loginType ?? 'customer') === 'staff' ? 'Đăng nhập nhân viên / admin tổng' : 'Đăng nhập khách hàng' }}</h4>
               <div class="form-floating mb-3">
                 <input class="form-control form-control_gray @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required="" autocomplete="email" autofocus="">
                 <label for="email">Email address *</label>
@@ -41,8 +43,11 @@
               <button class="btn btn-primary w-100 text-uppercase" type="submit">Log In</button>
 
               <div class="customer-option mt-4 text-center">
-                <span class="text-secondary">No account yet?</span>
-                <a href="{{route('register')}}" class="btn-text js-show-register">Create Account</a> | 
+                <a href="{{route('login')}}" class="btn-text">Chọn loại tài khoản khác</a>
+                @if(($loginType ?? 'customer') === 'customer')
+                  <span class="text-secondary"> | Chưa có tài khoản?</span>
+                  <a href="{{route('register')}}" class="btn-text js-show-register">Tạo tài khoản</a>
+                @endif
               </div>
             </form>
           </div>

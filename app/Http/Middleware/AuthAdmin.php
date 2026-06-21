@@ -23,6 +23,28 @@ class AuthAdmin
                 {
                     return $next($request);
                 }
+
+                if(Auth::user()->utype === 'ADMM' && strtolower(Auth::user()->email) === 'admint@lvtn.vn')
+                {
+                    $allowedRoutes = [
+                        'admin.index',
+                        'admin.orders',
+                        'admin.order.details',
+                        'admin.staff',
+                        'admin.staff.add',
+                        'admin.staff.store',
+                        'admin.staff.edit',
+                        'admin.staff.update',
+                        'admin.staff.delete',
+                        'admin.customers',
+                    ];
+
+                    if(in_array($request->route()?->getName(), $allowedRoutes, true)) {
+                        return $next($request);
+                    }
+
+                    return redirect()->route('admin.index');
+                }
                 else
                 {
                     Session::flush();

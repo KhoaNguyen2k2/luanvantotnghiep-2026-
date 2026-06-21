@@ -190,7 +190,7 @@ function pureFadeOut(e) {
         resetButton: '.search-popup__reset',
         searchCategorySelector: '.js-search-select',
         resultContainer: '.search-result',
-        ajaxURL: './search.html'
+        ajaxURL: ''
       }
 
       this.searchInputFocusedClass = 'search-field__focused';
@@ -1335,9 +1335,10 @@ function pureFadeOut(e) {
     window.location.href='./shop_checkout.html';
   });
 
-  $('.checkout-form .btn-checkout').off('click').on('click', function() {
-    window.location.href='./shop_order_complete.html';
-  });
+  // Removed old static checkout redirect so real form submission can work.
+  // $('.checkout-form .btn-checkout').off('click').on('click', function() {
+  //   window.location.href='./shop_order_complete.html';
+  // });
 
   document.querySelector('.js-show-register').addEventListener('click', function(e) {
     document.querySelector(this.getAttribute("href")).click();

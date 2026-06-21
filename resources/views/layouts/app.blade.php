@@ -10,7 +10,7 @@
     <title>@yield('title', config('app.name', 'Laravel'))</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <meta name="author" content="surfside media" />
-  <link rel="shortcut icon" href="{{asset('assets/images/favicon.png') }}" type="image/x-icon">
+  <link rel="shortcut icon" href="{{asset('assets/images/favicon.ico') }}" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.gstatic.com/">
   <link
     href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
@@ -18,6 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Allura&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('assets/css/plugins/swiper.min.css')}}" type="text/css" />
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="{{ asset('css/sweetalert.min.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
@@ -25,6 +26,9 @@
     @stack("styles")
 </head>
 <body class="gradient-bg">
+  @php
+    $cartQtyTotal = (int) Cart::instance('cart')->content()->sum(fn ($row) => (int) $row->qty);
+  @endphp
   <svg class="d-none">
     <symbol id="icon_nav" viewBox="0 0 25 18">
       <rect width="25" height="2" />
@@ -257,6 +261,35 @@
     .logo__image {
       max-width: 220px;
     }
+    .product-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    transition: all 0.3s ease;
+    padding-right: 5px;
+}
+
+.product-item .image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    gap: 10px;
+    flex-shrink: 0;
+    padding: 5px;
+    border-radius: 10px;
+    background: #EFF4F8;
+}
+
+#box-content-search li {
+    list-style: none;
+}
+
+#box-content-search .product-item {
+    margin-bottom: 10px;
+}
   </style>
   <div class="header-mobile header_sticky">
     <div class="container d-flex align-items-center h-100">
@@ -274,26 +307,28 @@
       </div> --}}
 
       <div class="logo">
-            <a href="{{ route('home.index') }}">
+            <a href="{{ url('/') }}/">
               <img src="{{ asset('assets/images/logo.png') }}" alt="Uomo" class="logo__image d-block" />
             </a>
       </div>
 
-      <a href="#" class="header-tools__item header-tools__cart js-open-aside" data-aside="cartDrawer">
+      <a href="{{ route('cart.index') }}" class="header-tools__item header-tools__cart js-open-aside" data-aside="cartDrawer">
         <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <use href="#icon_cart" />
         </svg>
-        <span class="cart-amount d-block position-absolute js-cart-items-count">3</span>
+        @if ($cartQtyTotal > 0)
+        <span class="cart-amount d-block position-absolute js-cart-items-count">{{ $cartQtyTotal }}</span>
+        @endif
       </a>
     </div>
 
     <nav
       class="header-mobile__navigation navigation d-flex flex-column w-100 position-absolute top-100 bg-body overflow-auto">
       <div class="container">
-        <form action="#" method="GET" class="search-field position-relative mt-4 mb-3">
+        <form action="{{ route('shop.index') }}" method="GET" class="search-field position-relative mt-4 mb-3">
           <div class="position-relative">
-            <input class="search-field__input w-100 border rounded-1" type="text" name="search-keyword"
-              placeholder="Search products" />
+            <input class="search-field__input w-100 border rounded-1" type="search" name="q" autocomplete="off"
+              value="{{ request('q') }}" placeholder="Tìm sản phẩm..." />
             <button class="btn-icon search-popup__submit pb-0 me-2" type="submit">
               <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
@@ -313,19 +348,22 @@
         <div class="overflow-hidden">
           <ul class="navigation__list list-unstyled position-relative">
             <li class="navigation__item">
-              <a href="index.html" class="navigation__link">Home</a>
+              <a href="{{ route('home.index') }}" class="navigation__link">Home</a>
             </li>
             <li class="navigation__item">
-              <a href="shop.html" class="navigation__link">Shop</a>
+              <a href="{{ route('shop.index') }}" class="navigation__link">Shop</a>
             </li>
             <li class="navigation__item">
-              <a href="cart.html" class="navigation__link">Cart</a>
+              <a href="{{ route('cart.index') }}" class="navigation__link">Cart</a>
             </li>
             <li class="navigation__item">
               <a href="about.html" class="navigation__link">About</a>
             </li>
             <li class="navigation__item">
-              <a href="contact.html" class="navigation__link">Contact</a>
+              <a href="{{ route('home.contact') }}" class="navigation__link">Contact</a>
+            </li>
+            <li class="navigation__item">
+              <a href="{{ route('build.pc.ai') }}" class="navigation__link">Build PC</a>
             </li>
           </ul>
         </div>
@@ -394,7 +432,7 @@
     <div class="container">
       <div class="header-desk header-desk_type_1">
         <div class="logo">
-          <a href="{{ route('home.index') }}">
+          <a href="{{ url('/') }}/">
             <img src="{{ asset('assets/images/logo.png') }}" alt="Uomo" class="logo__image d-block" />
           </a>
         </div>
@@ -402,19 +440,22 @@
         <nav class="navigation">
           <ul class="navigation__list list-unstyled d-flex">
             <li class="navigation__item">
-              <a href="{{route('home.index')}}" class="navigation__link">Home</a>
+              <a href="{{route('home.index')}}" class="navigation__link">Trang chủ</a>
             </li>
             <li class="navigation__item">
-              <a href="shop.html" class="navigation__link">Shop</a>
+              <a href="{{ route('shop.index') }}" class="navigation__link">Mua sắm</a>
             </li>
             <li class="navigation__item">
-              <a href="cart.html" class="navigation__link">Cart</a>
+              <a href="{{ route('cart.index') }}" class="navigation__link">Giỏ hàng</a>
             </li>
             <li class="navigation__item">
-              <a href="about.html" class="navigation__link">About</a>
+              <a href="about.html" class="navigation__link">Giới thiệu</a>
             </li>
             <li class="navigation__item">
-              <a href="contact.html" class="navigation__link">Contact</a>
+              <a href="{{ route('home.contact') }}" class="navigation__link">Liên hệ</a>
+            </li>
+            <li class="navigation__item">
+              <a href="{{ route('build.pc.ai') }}" class="navigation__link">Build PC</a>
             </li>
           </ul>
         </nav>
@@ -432,11 +473,11 @@
             </div>
 
             <div class="search-popup js-hidden-content">
-              <form action="#" method="GET" class="search-field container">
+              <form action="{{ route('shop.index') }}" method="GET" class="search-field container">
                 <p class="text-uppercase text-secondary fw-medium mb-4">Bạn đang tìm gì?</p>
                 <div class="position-relative">
-                  <input class="search-field__input search-popup__input w-100 fw-medium" type="text"
-                    name="search-keyword" placeholder="Search products" />
+                  <input class="search-field__input search-popup__input w-100 fw-medium" type="search" name="q" id="search-input" autocomplete="off"
+                    value="{{ request('q') }}" placeholder="Tìm sản phẩm..." />
                   <button class="btn-icon search-popup__submit" type="submit">
                     <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
                       xmlns="http://www.w3.org/2000/svg">
@@ -447,20 +488,7 @@
                 </div>
 
                 <div class="search-popup__results">
-                  <div class="sub-menu search-suggestion">
-                    <h6 class="sub-menu__title fs-base">Tìm nhanh</h6>
-                    <ul class="sub-menu__list list-unstyled">
-                      <li class="sub-menu__item"><a href="shop2.html" class="menu-link menu-link_us-s">RAM</a>
-                      </li>
-                      <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">CPU</a></li>
-                      <li class="sub-menu__item"><a href="shop3.html" class="menu-link menu-link_us-s">GPU</a>
-                      </li>
-                      <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Nguồn</a></li>
-                      <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Màn hình</a></li>
-                    </ul>
-                  </div>
-
-                  <div class="search-result row row-cols-5"></div>
+                  <ul id="box-content-search" class="list-unstyled mb-0"></ul>
                 </div>
               </form>
             </div>
@@ -478,7 +506,7 @@
           </div>
           @else
            <div class="header-tools__item hover-container">
-            <a href="{{ Auth::user()->utype === 'ADM' ? route('admin.index') : route('user.index') }}" class="header-tools__item">
+            <a href="{{ (Auth::user()->utype === 'ADM' || (Auth::user()->utype === 'ADMM' && strtolower(Auth::user()->email) === 'admint@lvtn.vn')) ? route('admin.index') : route('user.account.details') }}" class="header-tools__item">
                 <span class="pr-6px">{{ Auth::user()->name }}</span>
               <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
@@ -488,18 +516,23 @@
           </div>
            @endguest
 
-          <a href="wishlist.html" class="header-tools__item">
+          <a href="{{ route('wishlist.index') }}" class="header-tools__item header-tools__cart" aria-label="Wishlist">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <use href="#icon_heart" />
             </svg>
+            @if(Cart::instance('wishlist')->content()->count() > 0)
+            <span class="cart-amount d-block position-absolute js-cart-items-count">{{ Cart::instance('wishlist')->content()->count() }}</span>
+            @endif
           </a>
 
-          <a href="cart.html" class="header-tools__item header-tools__cart">
+          <a href="{{ route('cart.index') }}" class="header-tools__item header-tools__cart">
             <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
               xmlns="http://www.w3.org/2000/svg">
               <use href="#icon_cart" />
             </svg>
-            <span class="cart-amount d-block position-absolute js-cart-items-count">3</span>
+            @if ($cartQtyTotal > 0)
+            <span class="cart-amount d-block position-absolute js-cart-items-count">{{ $cartQtyTotal }}</span>
+            @endif
           </a>
         </div>
       </div>
@@ -515,7 +548,7 @@
       <div class="row row-cols-lg-5 row-cols-2">
         <div class="footer-column footer-store-info col-12 mb-4 mb-lg-0">
           <div class="logo">
-            <a href="{{ route('home.index') }}">
+            <a href="{{ url('/') }}/">
               <img src="{{ asset('assets/images/logo.png') }}" alt="SurfsideMedia" class="logo__image d-block" />
             </a>
           </div>
@@ -568,57 +601,11 @@
           </ul>
         </div>
 
-        <div class="footer-column footer-menu mb-4 mb-lg-0">
-          <h6 class="sub-menu__title text-uppercase">Company</h6>
-          <ul class="sub-menu__list list-unstyled">
-            <li class="sub-menu__item"><a href="about-2.html" class="menu-link menu-link_us-s">About Us</a></li>
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Careers</a></li>
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Affiliates</a></li>
-            <li class="sub-menu__item"><a href="blog_list1.html" class="menu-link menu-link_us-s">Blog</a></li>
-            <li class="sub-menu__item"><a href="contact-2.html" class="menu-link menu-link_us-s">Contact Us</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-column footer-menu mb-4 mb-lg-0">
-          <h6 class="sub-menu__title text-uppercase">Shop</h6>
-          <ul class="sub-menu__list list-unstyled">
-            <li class="sub-menu__item"><a href="shop2.html" class="menu-link menu-link_us-s">New Arrivals</a></li>
-            <li class="sub-menu__item"><a href="shop3.html" class="menu-link menu-link_us-s">Accessories</a></li>
-            <li class="sub-menu__item"><a href="shop4.html" class="menu-link menu-link_us-s">Men</a></li>
-            <li class="sub-menu__item"><a href="shop5.html" class="menu-link menu-link_us-s">Women</a></li>
-            <li class="sub-menu__item"><a href="shop1.html" class="menu-link menu-link_us-s">Shop All</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-column footer-menu mb-4 mb-lg-0">
-          <h6 class="sub-menu__title text-uppercase">Help</h6>
-          <ul class="sub-menu__list list-unstyled">
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Customer Service</a></li>
-            <li class="sub-menu__item"><a href="account_dashboard.html" class="menu-link menu-link_us-s">My Account</a>
-            </li>
-            <li class="sub-menu__item"><a href="store_location.html" class="menu-link menu-link_us-s">Find a Store</a>
-            </li>
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Legal & Privacy</a></li>
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Gift Card</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-column footer-menu mb-4 mb-lg-0">
-          <h6 class="sub-menu__title text-uppercase">Categories</h6>
-          <ul class="sub-menu__list list-unstyled">
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Shirts</a></li>
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Jeans</a></li>
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Shoes</a></li>
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Bags</a></li>
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Shop All</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
+       
 
     <div class="footer-bottom">
       <div class="container d-md-flex align-items-center">
-        <span class="footer-copyright me-auto">©2024 Surfside Media</span>
+        <span class="footer-copyright me-auto">©2026 PC Parts</span>
         <div class="footer-settings d-md-flex align-items-center">
           <a href="privacy-policy.html">Privacy Policy</a> &nbsp;|&nbsp; <a href="terms-conditions.html">Terms &amp;
             Conditions</a>
@@ -650,6 +637,8 @@
         </a>
       </div>
 
+      
+
       <div class="col-4">
         <a href="index.html" class="footer-mobile__link d-flex flex-column align-items-center">
           <div class="position-relative">
@@ -671,9 +660,95 @@
   <script src="{{ asset('assets/js/plugins/jquery.min.js') }}"></script>
   <script src="{{ asset('assets/js/plugins/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('assets/js/plugins/bootstrap-slider.min.js') }}"></script>
+  <script src="{{ asset('js/sweetalert.min.js') }}"></script> 
   <script src="{{ asset('assets/js/plugins/swiper.min.js') }}"></script>
   <script src="{{ asset('assets/js/plugins/countdown.js') }}"></script>
+  <script>
+    window.__searchSuggestUrl = @json(route('home.search'));
+  </script>
   <script src="{{ asset('assets/js/theme.js') }}"></script>
+  <script>
+    (function ($) {
+      var searchUrl = window.__searchSuggestUrl;
+      var debounceTimer;
+
+      function escapeHtml(text) {
+        var map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
+        return String(text).replace(/[&<>"']/g, function (m) { return map[m]; });
+      }
+
+      function buildListItems(items) {
+        if (!items || !items.length) {
+          return '<li class="px-2 py-2 text-secondary small">Không có sản phẩm phù hợp.</li>';
+        }
+        return items.map(function (item) {
+          return (
+            '<li class="mb-2">' +
+              '<a href="' + escapeHtml(item.url) + '" class="product-item text-decoration-none">' +
+                '<div class="image no-bg">' +
+                  '<img src="' + escapeHtml(item.thumbnail) + '" alt="" width="44" height="44" style="object-fit:cover;border-radius:8px;">' +
+                '</div>' +
+                '<div class="name"><span class="body-text text-dark">' + escapeHtml(item.name) + '</span></div>' +
+              '</a>' +
+            '</li>'
+          );
+        }).join('');
+      }
+
+      function fillTargets($form, items) {
+        var $ul = $form.find('#box-content-search');
+        if ($ul.length) {
+          $ul.html(buildListItems(items));
+        }
+        var $div = $form.find('.search-result');
+        if ($div.length) {
+          $div.html('<ul class="list-unstyled mb-0">' + buildListItems(items) + '</ul>');
+        }
+      }
+
+      $(document).on('input', '.search-field__input', function () {
+        var $input = $(this);
+        var $form = $input.closest('.search-field');
+        var q = ($input.val() || '').trim();
+        clearTimeout(debounceTimer);
+        if (q.length < 2) {
+          $form.find('#box-content-search').empty();
+          $form.find('.search-result').empty();
+          return;
+        }
+        debounceTimer = setTimeout(function () {
+          $.ajax({
+            url: searchUrl,
+            method: 'GET',
+            data: { q: q },
+            dataType: 'json',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+          }).done(function (data) {
+            fillTargets($form, data || []);
+          }).fail(function () {
+            var err = '<li class="px-2 py-2 text-danger small">Không thể tìm kiếm. Thử lại sau.</li>';
+            $form.find('#box-content-search').html(err);
+            $form.find('.search-result').html('<ul class="list-unstyled mb-0">' + err + '</ul>');
+          });
+        }, 280);
+      });
+
+      $(document).on('submit', 'form.search-field', function (e) {
+        var q = ($(this).find('input[name="q"]').val() || '').trim();
+        if (!q) {
+          e.preventDefault();
+        }
+      });
+
+      $(document).on('click', '.search-popup__reset', function () {
+        var $form = $(this).closest('.search-field');
+        setTimeout(function () {
+          $form.find('#box-content-search').empty();
+          $form.find('.search-result').empty();
+        }, 0);
+      });
+    })(jQuery);
+  </script>
   @stack("scripts")
 </body>
 </html>

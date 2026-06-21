@@ -49,7 +49,19 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users',
+                function ($attribute, $value, $fail) {
+                    $email = strtolower((string) $value);
+                    if (str_ends_with($email, '@tttn.vn') || str_ends_with($email, '@lvtn.vn')) {
+                        $fail('Email nội bộ chỉ dùng cho nhân viên hoặc admin tổng.');
+                    }
+                },
+            ],
             'mobile' => ['required','digits:10','unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -66,6 +78,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'mobile' => $data['mobile'],
+            'utype' => 'USR',
             'password' => Hash::make($data['password']),
         ]);
     }

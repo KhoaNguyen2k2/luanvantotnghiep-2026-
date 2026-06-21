@@ -4,6 +4,40 @@ body {
 
 #logo_header_mobile {
     max-width: 190px;
+    max-height: 44px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+/* Prevent logos from overflowing layout (frontend + admin) */
+.logo__image {
+    max-width: 220px !important;
+    max-height: 44px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+}
+
+#logo_header {
+    max-width: 190px !important;
+    max-height: 44px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+}
+
+/* Fallback: in case a page uses different markup */
+header .logo img,
+.header-mobile .logo img,
+.box-logo img {
+    max-height: 44px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
 }
 
 .wg-table.table-all-user>* {
@@ -83,81 +117,109 @@ body {
     width: 20px;
     margin: 0 auto;
 }
-.wg-table.table-all-user>* {
-    min-width: 1260px;
+
+/* Admin — chi tiết đơn: Name đủ rộng, ảnh đúng ô, SKU/Brand/Category xuống dòng trong ô */
+table.admin-order-items.table-striped {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 960px;
 }
 
-/*------*/
-.wgp-pagination svg {
-    height: 20px;
+table.admin-order-items.table-striped th:nth-child(1),
+table.admin-order-items.table-striped td:nth-child(1) {
+    width: 30%;
+    min-width: 240px;
+    max-width: none;
+    vertical-align: top;
+    padding-top: 14px;
+    padding-bottom: 14px;
 }
 
-.wgp-pagination p {
-    font-size: 16px;
+table.admin-order-items.table-striped th:nth-child(2),
+table.admin-order-items.table-striped td:nth-child(2) {
+    width: 11%;
+    min-width: 96px;
+    max-width: none;
 }
 
-.pagination {
-    margin-left: 30px;
-
-    .page-link {
-        padding: 1.1rem;
-        font-size: 16px;
-    }
+table.admin-order-items.table-striped th:nth-child(3),
+table.admin-order-items.table-striped td:nth-child(3) {
+    width: 7%;
 }
 
-.swal-button--confirm {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
+table.admin-order-items.table-striped th:nth-child(4),
+table.admin-order-items.table-striped td:nth-child(4) {
+    width: 11%;
 }
 
-.swal-button--confirm.active,
-.swal-button--confirm:active,
-.show>.swal-button--confirm.dropdown-toggle,
-.swal-button--confirm:hover {
-    background-color: #b02a37 !important;
-    border-color: #a52834 !important;
-    color: #fff;
+table.admin-order-items.table-striped th:nth-child(5),
+table.admin-order-items.table-striped td:nth-child(5) {
+    width: 11%;
 }
 
-.swal-footer {
-    text-align: center;
+table.admin-order-items.table-striped th:nth-child(6),
+table.admin-order-items.table-striped td:nth-child(6) {
+    width: 12%;
 }
 
-.table-bordered>:not(caption)>*>* {
-    border-width: inherit;
-    line-height: 32px;
-    font-size: 14px;
-    border: 1px solid #e1e1e1;
+table.admin-order-items.table-striped th:nth-child(7),
+table.admin-order-items.table-striped td:nth-child(7) {
+    width: 10%;
+}
+
+table.admin-order-items.table-striped th:nth-child(8),
+table.admin-order-items.table-striped td:nth-child(8) {
+    width: 8%;
+}
+
+table.admin-order-items.table-striped th:nth-child(9),
+table.admin-order-items.table-striped td:nth-child(9) {
+    width: 6%;
+}
+
+table.admin-order-items td.pname {
+    align-items: flex-start;
+}
+
+table.admin-order-items td.pname .name {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+table.admin-order-items .order-item-name-link {
+    display: block;
+    line-height: 1.45;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+table.admin-order-items .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+table.admin-order-items .order-item-thumb-fallback {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 50px;
+    background: linear-gradient(135deg, #ececec 0%, #f7f7f7 100%);
+    border-radius: 8px;
+}
+
+table.admin-order-items .admin-order-cell-wrap {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.4;
     vertical-align: middle;
 }
 
-.table-striped .image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    flex-shrink: 0;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.table-striped {
-    min-width: 1200px;
-}
-
-.table-striped th:nth-child(2),
-.table-striped td:nth-child(2) {
-    width: 250px;
-    padding-bottom: 18px;
-}
-
-.pname {
-    display: flex;
-    gap: 13px;
-}
-
-.view-icon {
-    width: 20px;
-    margin: 0 auto;
+table.admin-order-items .admin-order-cell-options {
+    min-width: 0;
+    text-align: left !important;
+    font-size: 13px;
 }

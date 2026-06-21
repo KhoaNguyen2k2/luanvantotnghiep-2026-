@@ -17,8 +17,8 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('font/fonts.css') }}">
     <link rel="stylesheet" href="{{ asset('icon/style.css') }}">
-    <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}">
-    <link rel="apple-touch-icon-precomposed" href="{{ asset('images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
+    <link rel="apple-touch-icon-precomposed" href="{{ asset('assets/images/favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/sweetalert.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/custom.css') }}">
  
@@ -37,10 +37,14 @@
 </div> -->
 
                 <div class="section-menu-left">
+                    @php
+                        $adminUser = auth()->user();
+                        $isSuperAdmin = $adminUser && $adminUser->utype === 'ADMM';
+                    @endphp
                     <div class="box-logo">
-                        <a href="{{ route('admin.index') }}" id="site-logo-inner'">
-                            <img class="" id="logo_header" alt="" src="images/logo/logo.png"
-                                data-light="images/logo/logo.png" data-dark="images/logo/logo.png">
+                        <a href="{{ url('/') }}/" id="site-logo-inner'">
+                            <img class="" id="logo_header" alt="" src="{{ asset('images/logo/logo.png') }}"
+                                data-light="{{ asset('images/logo/logo.png') }}" data-dark="{{ asset('images/logo/logo.png') }}">
                         </a>
                         <div class="button-show-hide">
                             <i class="icon-menu-left"></i>
@@ -48,125 +52,146 @@
                     </div>
                     <div class="center">
                         <div class="center-item">
-                            <div class="center-heading">Main Home</div>
+                            <div class="center-heading">Trang chính</div>
                             <ul class="menu-list">
-                                <li class="menu-item">
-                                    <a href="{{ route('admin.index') }}" class="">
-                                        <div class="icon"><i class="icon-grid"></i></div>
-                                        <div class="text">Dashboard</div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="center-item">
-                            <ul class="menu-list">
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-shopping-cart"></i></div>
-                                        <div class="text">Products</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="add-product.html" class="">
-                                                <div class="text">Add Product</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="products.html" class="">
-                                                <div class="text">Products</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-layers"></i></div>
-                                        <div class="text">Brand</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="add-brand.html" class="">
-                                                <div class="text">New Brand</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="brands.html" class="">
-                                                <div class="text">Brands</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-layers"></i></div>
-                                        <div class="text">Category</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="add-category.html" class="">
-                                                <div class="text">New Category</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="categories.html" class="">
-                                                <div class="text">Categories</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
+                                @if($isSuperAdmin)
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.index') }}" class="">
+                                            <div class="icon"><i class="icon-grid"></i></div>
+                                            <div class="text">Bảng điều khiển</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.orders') }}" class="">
+                                            <div class="icon"><i class="icon-file-plus"></i></div>
+                                            <div class="text">Đơn hàng</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.staff') }}" class="">
+                                            <div class="icon"><i class="icon-user"></i></div>
+                                            <div class="text">Quản lý nhân viên</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.customers') }}" class="">
+                                            <div class="icon"><i class="icon-user"></i></div>
+                                            <div class="text">Quản lý khách hàng</div>
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.profile') }}" class="">
+                                            <div class="icon"><i class="icon-user"></i></div>
+                                            <div class="text">Trang cá nhân</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item has-children">
+                                        <a href="javascript:void(0);" class="menu-item-button">
+                                            <div class="icon"><i class="icon-shopping-cart"></i></div>
+                                            <div class="text">Sản phẩm</div>
+                                        </a>
+                                        <ul class="sub-menu">
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.product.add') }}" class="">
+                                                    <div class="text">Thêm sản phẩm</div>
+                                                </a>
+                                            </li>
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.products') }}" class="">
+                                                    <div class="text">Sản phẩm</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item has-children">
+                                        <a href="javascript:void(0);" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Thương hiệu</div>
+                                        </a>
+                                        <ul class="sub-menu">
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.brand.add') }}" class="">
+                                                    <div class="text">Thương hiệu mới</div>
+                                                </a>
+                                            </li>
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.brands') }}" class="">
+                                                    <div class="text">Danh sách thương hiệu</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item has-children">
+                                        <a href="javascript:void(0);" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Danh mục</div>
+                                        </a>
+                                        <ul class="sub-menu">
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.category.add') }}" class="">
+                                                    <div class="text">Danh mục mới</div>
+                                                </a>
+                                            </li>
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.categories') }}" class="">
+                                                    <div class="text">Danh mục</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item has-children">
+                                        <a href="javascript:void(0);" class="menu-item-button">
+                                            <div class="icon"><i class="icon-file-plus"></i></div>
+                                            <div class="text">Đơn hàng</div>
+                                        </a>
+                                        <ul class="sub-menu">
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.orders') }}" class="">
+                                                    <div class="text">Đơn hàng</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.slides') }}" class="">
+                                            <div class="icon"><i class="icon-image"></i></div>
+                                            <div class="text">Slider</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.coupons') }}" class="">
+                                            <div class="icon"><i class="icon-grid"></i></div>
+                                            <div class="text">Mã giảm giá</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.contacts') }}" class="">
+                                            <div class="icon"><i class="icon-mail"></i></div>
+                                            <div class="text">Tin nhắn</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.profile') }}" class="">
+                                            <div class="icon"><i class="icon-user"></i></div>
+                                            <div class="text">Người dùng</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.settings') }}" class="">
+                                            <div class="icon"><i class="icon-settings"></i></div>
+                                            <div class="text">Cài đặt</div>
+                                        </a>
+                                    </li>
+                                @endif
 
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-file-plus"></i></div>
-                                        <div class="text">Order</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="orders.html" class="">
-                                                <div class="text">Orders</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="order-tracking.html" class="">
-                                                <div class="text">Order tracking</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
                                 <li class="menu-item">
-                                    <a href="slider.html" class="">
-                                        <div class="icon"><i class="icon-image"></i></div>
-                                        <div class="text">Slider</div>
-                                    </a>
-                                </li>
-                                <li class="menu-item">
-                                    <a href="coupons.html" class="">
-                                        <div class="icon"><i class="icon-grid"></i></div>
-                                        <div class="text">Coupons</div>
-                                    </a>
-                                </li>
-
-                                <li class="menu-item">
-                                    <a href="users.html" class="">
-                                        <div class="icon"><i class="icon-user"></i></div>
-                                        <div class="text">User</div>
-                                    </a>
-                                </li>
-
-                                <li class="menu-item">
-                                    <a href="settings.html" class="">
-                                        <div class="icon"><i class="icon-settings"></i></div>
-                                        <div class="text">Settings</div>
-                                    </a>
-                                </li>
-
-                                <li class="menu-item">
-                                    <form method="POST" action="{{route('logout')}}" id="logout-form">
+                                    <form method="POST" action="{{ route('logout') }}" id="logout-form">
                                         @csrf
-                                    <a href="{{route('logout')}}" class="" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        <div class="icon"><i class="icon-settings"></i></div>
-                                        <div class="text">Logout</div>
-                                    </a>
+                                        <a href="{{ route('logout') }}" class="" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <div class="icon"><i class="icon-log-out"></i></div>
+                                            <div class="text">Đăng xuất</div>
+                                        </a>
                                     </form>
                                 </li>
                             </ul>
@@ -178,216 +203,32 @@
                     <div class="header-dashboard">
                         <div class="wrap">
                             <div class="header-left">
-                                <a href="index-2.html">
-                                    <img class="" id="logo_header_mobile" alt="" src="images/logo/logo.png"
-                                        data-light="images/logo/logo.png" data-dark="images/logo/logo.png"
-                                        data-width="154px" data-height="52px" data-retina="images/logo/logo.png">
+                                <a href="{{ url('/') }}/">
+                                    <img class="" id="logo_header_mobile" alt="" src="{{ asset('images/logo/logo.png') }}"
+                                        data-light="{{ asset('images/logo/logo.png') }}" data-dark="{{ asset('images/logo/logo.png') }}"
+                                        data-width="154px" data-height="52px" data-retina="{{ asset('images/logo/logo.png') }}">
                                 </a>
                                 <div class="button-show-hide">
                                     <i class="icon-menu-left"></i>
                                 </div>
 
 
-                                <form class="form-search flex-grow">
-                                    <fieldset class="name">
-                                        <input type="text" placeholder="Search here..." class="show-search" name="name"
-                                            tabindex="2" value="" aria-required="true" required="">
-                                    </fieldset>
-                                    <div class="button-submit">
-                                        <button class="" type="submit"><i class="icon-search"></i></button>
-                                    </div>
-                                    <div class="box-content-search" id="box-content-search">
-                                        <ul class="mb-24">
-                                            <li class="mb-14">
-                                                <div class="body-title">Top selling product</div>
-                                            </li>
-                                            <li class="mb-14">
-                                                <div class="divider"></div>
-                                            </li>
-                                            <li>
-                                                <ul>
-                                                    <li class="product-item gap14 mb-10">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/17.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.html" class="body-text">Dog Food
-                                                                    Rachael Ray Nutrish®</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="mb-10">
-                                                        <div class="divider"></div>
-                                                    </li>
-                                                    <li class="product-item gap14 mb-10">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/18.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.html" class="body-text">Natural
-                                                                    Dog Food Healthy Dog Food</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="mb-10">
-                                                        <div class="divider"></div>
-                                                    </li>
-                                                    <li class="product-item gap14">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/19.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.html" class="body-text">Freshpet
-                                                                    Healthy Dog Food and Cat</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                        <ul class="">
-                                            <li class="mb-14">
-                                                <div class="body-title">Order product</div>
-                                            </li>
-                                            <li class="mb-14">
-                                                <div class="divider"></div>
-                                            </li>
-                                            <li>
-                                                <ul>
-                                                    <li class="product-item gap14 mb-10">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/20.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.html" class="body-text">Sojos
-                                                                    Crunchy Natural Grain Free...</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="mb-10">
-                                                        <div class="divider"></div>
-                                                    </li>
-                                                    <li class="product-item gap14 mb-10">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/21.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.html" class="body-text">Kristin
-                                                                    Watson</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="mb-10">
-                                                        <div class="divider"></div>
-                                                    </li>
-                                                    <li class="product-item gap14 mb-10">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/22.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.html" class="body-text">Mega
-                                                                    Pumpkin Bone</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="mb-10">
-                                                        <div class="divider"></div>
-                                                    </li>
-                                                    <li class="product-item gap14">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/23.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.html" class="body-text">Mega
-                                                                    Pumpkin Bone</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </form>
+                                @if(!$isSuperAdmin)
+                                    <form class="form-search flex-grow search-field" method="GET" action="{{ route('admin.products') }}">
+                                        <fieldset class="name">
+                                            <input type="search" placeholder="Tìm sản phẩm..." class="show-search search-field__input" name="q" id="admin-search-input" tabindex="2" value="{{ request('q') }}" aria-required="true" autocomplete="off">
+                                        </fieldset>
+                                        <div class="button-submit">
+                                            <button class="" type="submit"><i class="icon-search"></i></button>
+                                        </div>
+                                        <div class="box-content-search">
+                                            <ul id="box-content-search"></ul>
+                                        </div>
+                                    </form>
+                                @endif
 
                             </div>
                             <div class="header-grid">
-
-                                <div class="popup-wrap message type-header">
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <span class="header-item">
-                                                <span class="text-tiny">1</span>
-                                                <i class="icon-bell"></i>
-                                            </span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end has-content"
-                                            aria-labelledby="dropdownMenuButton2">
-                                            <li>
-                                                <h6>Notifications</h6>
-                                            </li>
-                                            <li>
-                                                <div class="message-item item-1">
-                                                    <div class="image">
-                                                        <i class="icon-noti-1"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="body-title-2">Discount available</div>
-                                                        <div class="text-tiny">Morbi sapien massa, ultricies at rhoncus
-                                                            at, ullamcorper nec diam</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="message-item item-2">
-                                                    <div class="image">
-                                                        <i class="icon-noti-2"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="body-title-2">Account has been verified</div>
-                                                        <div class="text-tiny">Mauris libero ex, iaculis vitae rhoncus
-                                                            et</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="message-item item-3">
-                                                    <div class="image">
-                                                        <i class="icon-noti-3"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="body-title-2">Order shipped successfully</div>
-                                                        <div class="text-tiny">Integer aliquam eros nec sollicitudin
-                                                            sollicitudin</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="message-item item-4">
-                                                    <div class="image">
-                                                        <i class="icon-noti-4"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="body-title-2">Order pending: <span>ID 305830</span>
-                                                        </div>
-                                                        <div class="text-tiny">Ultricies at rhoncus at ullamcorper</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li><a href="#" class="tf-button w-full">View all</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-
-
 
                                 <div class="popup-wrap user type-header">
                                     <div class="dropdown">
@@ -395,47 +236,22 @@
                                             id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
                                             <span class="header-user wg-user">
                                                 <span class="image">
-                                                    <img src="images/avatar/user-1.png" alt="">
+                                                    <img src="{{ asset('images/avatar/user-1.png') }}" alt="{{ $adminUser->name ?? 'Admin' }}">
                                                 </span>
                                                 <span class="flex flex-column">
-                                                    <span class="body-title mb-2">Kristin Watson</span>
-                                                    <span class="text-tiny">Admin</span>
+                                                    <span class="body-title mb-2">{{ $adminUser->name ?? 'Admin' }}</span>
+                                                    <span class="text-tiny">{{ $adminUser->position ?? ($isSuperAdmin ? 'Admin tổng' : 'Nhân viên') }}</span>
                                                 </span>
                                             </span>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end has-content"
                                             aria-labelledby="dropdownMenuButton3">
                                             <li>
-                                                <a href="#" class="user-item">
+                                                <a href="{{ route('admin.profile') }}" class="user-item">
                                                     <div class="icon">
                                                         <i class="icon-user"></i>
                                                     </div>
-                                                    <div class="body-title-2">Account</div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="user-item">
-                                                    <div class="icon">
-                                                        <i class="icon-mail"></i>
-                                                    </div>
-                                                    <div class="body-title-2">Inbox</div>
-                                                    <div class="number">27</div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="user-item">
-                                                    <div class="icon">
-                                                        <i class="icon-file-text"></i>
-                                                    </div>
-                                                    <div class="body-title-2">Taskboard</div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="user-item">
-                                                    <div class="icon">
-                                                        <i class="icon-headphones"></i>
-                                                    </div>
-                                                    <div class="body-title-2">Support</div>
+                                                    <div class="body-title-2">Tài khoản</div>
                                                 </a>
                                             </li>
                                             <li>
@@ -446,7 +262,7 @@
                                                     <div class="icon">
                                                         <i class="icon-log-out"></i>
                                                     </div>
-                                                    <div class="body-title-2">Log out</div>
+                                                    <div class="body-title-2">Đăng xuất</div>
                                                 </a>
                                                  </form>
                                             </li>
@@ -464,7 +280,7 @@
 
 
                         <div class="bottom-page">
-                            <div class="body-text">Copyright © 2024 SurfsideMedia</div>
+                            <div class="body-text">B?n quy?n ? 2026 PC Parts</div>
                         </div>
                     </div>
 
@@ -488,17 +304,17 @@
 
                     var options = {
                         series: [{
-                            name: 'Total',
+                            name: 'Đang chờ',
                             data: [0.00, 0.00, 0.00, 0.00, 0.00, 273.22, 208.12, 0.00, 0.00, 0.00, 0.00, 0.00]
                         }, {
-                            name: 'Pending',
+                            name: '?ang ch?',
                             data: [0.00, 0.00, 0.00, 0.00, 0.00, 273.22, 208.12, 0.00, 0.00, 0.00, 0.00, 0.00]
                         },
                         {
-                            name: 'Delivered',
+                            name: 'Đã hủy',
                             data: [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
                         }, {
-                            name: 'Canceled',
+                            name: '?? h?y',
                             data: [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
                         }],
                         chart: {
@@ -531,7 +347,7 @@
                                     colors: '#212529',
                                 },
                             },
-                            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                            categories: ['Thg 1', 'Thg 2', 'Thg 3', 'Thg 4', 'Thg 5', 'Thg 6', 'Thg 7', 'Thg 8', 'Thg 9', 'Thg 10', 'Thg 11', 'Thg 12'],
                         },
                         yaxis: {
                             show: false,
@@ -542,7 +358,7 @@
                         tooltip: {
                             y: {
                                 formatter: function (val) {
-                                    return "$ " + val + ""
+                                    return "₫ " + val + ""
                                 }
                             }
                         }
@@ -577,8 +393,95 @@
             jQuery(window).on("resize", function () { });
         })(jQuery);
     </script>
+<script>
+    window.__searchSuggestUrl = @json(route('admin.search'));
+  </script>
+  <script>
+    (function ($) {
+      var searchUrl = window.__searchSuggestUrl;
+      var debounceTimer;
+
+      function escapeHtml(text) {
+        var map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
+        return String(text).replace(/[&<>"']/g, function (m) { return map[m]; });
+      }
+
+      function buildListItems(items) {
+        if (!items || !items.length) {
+          return '<li class="px-2 py-2 text-secondary small">Kh?ng c? s?n ph?m ph? h?p.</li>';
+        }
+        return items.map(function (item) {
+          return (
+            '<li class="mb-2">' +
+              '<a href="' + escapeHtml(item.url) + '" class="product-item text-decoration-none">' +
+                '<div class="image no-bg">' +
+                  '<img src="' + escapeHtml(item.thumbnail) + '" alt="" width="44" height="44" style="object-fit:cover;border-radius:8px;">' +
+                '</div>' +
+                '<div class="name"><span class="body-text text-dark">' + escapeHtml(item.name) + '</span></div>' +
+              '</a>' +
+            '</li>'
+          );
+        }).join('');
+      }
+
+      function fillTargets($form, items) {
+        var $ul = $form.find('#box-content-search');
+        if ($ul.length) {
+          $ul.html(buildListItems(items));
+        }
+        var $div = $form.find('.search-result');
+        if ($div.length) {
+          $div.html('<ul class="list-unstyled mb-0">' + buildListItems(items) + '</ul>');
+        }
+      }
+
+      $(document).on('input', '.search-field__input', function () {
+        var $input = $(this);
+        var $form = $input.closest('.search-field');
+        var q = ($input.val() || '').trim();
+        clearTimeout(debounceTimer);
+        if (q.length < 2) {
+          $form.find('#box-content-search').empty();
+          $form.find('.search-result').empty();
+          return;
+        }
+        debounceTimer = setTimeout(function () {
+          $.ajax({
+            url: searchUrl,
+            method: 'GET',
+            data: { q: q },
+            dataType: 'json',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+          }).done(function (data) {
+            fillTargets($form, data || []);
+          }).fail(function () {
+            var err = '<li class="px-2 py-2 text-danger small">Không thể tìm kiếm. Thử lại sau.</li>';
+            $form.find('#box-content-search').html(err);
+            $form.find('.search-result').html('<ul class="list-unstyled mb-0">' + err + '</ul>');
+          });
+        }, 280);
+      });
+
+      $(document).on('submit', 'form.search-field', function (e) {
+        var q = ($(this).find('input[name="q"]').val() || '').trim();
+        if (!q) {
+          e.preventDefault();
+        }
+      });
+
+      $(document).on('click', '.search-popup__reset', function () {
+        var $form = $(this).closest('.search-field');
+        setTimeout(function () {
+          $form.find('#box-content-search').empty();
+          $form.find('.search-result').empty();
+        }, 0);
+      });
+    })(jQuery);
+  </script>
+
     @stack("scripts")
 </body>
 
 
 </html>
+
