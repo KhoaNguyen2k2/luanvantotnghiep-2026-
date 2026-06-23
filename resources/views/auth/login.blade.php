@@ -42,6 +42,23 @@
 
               <button class="btn btn-primary w-100 text-uppercase" type="submit">Log In</button>
 
+              @if(($loginType ?? 'customer') === 'customer')
+                <div class="login-divider text-center my-3">
+                  <span>hoặc</span>
+                </div>
+
+                <div class="social-login-grid">
+                  <a class="social-login-btn social-login-btn--google" href="{{ route('social.redirect', ['provider' => 'google']) }}">
+                    <i class="fa fa-google"></i>
+                    <span>Google</span>
+                  </a>
+                  <a class="social-login-btn social-login-btn--facebook" href="{{ route('social.redirect', ['provider' => 'facebook']) }}">
+                    <i class="fa fa-facebook"></i>
+                    <span>Facebook</span>
+                  </a>
+                </div>
+              @endif
+
               <div class="customer-option mt-4 text-center">
                 <a href="{{route('login')}}" class="btn-text">Chọn loại tài khoản khác</a>
                 @if(($loginType ?? 'customer') === 'customer')
@@ -57,3 +74,74 @@
   </main>
 
 @endsection
+
+@push('styles')
+<style>
+  .login-divider {
+    color: #6b7280;
+    font-size: 14px;
+    position: relative;
+  }
+
+  .login-divider::before,
+  .login-divider::after {
+    content: "";
+    display: inline-block;
+    width: 34%;
+    height: 1px;
+    background: #e5e7eb;
+    vertical-align: middle;
+  }
+
+  .login-divider span {
+    display: inline-block;
+    padding: 0 12px;
+  }
+
+  .social-login-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .social-login-btn {
+    min-height: 46px;
+    border: 1px solid #e5e7eb;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border-radius: 4px;
+    font-weight: 700;
+    color: #111827;
+    background: #fff;
+  }
+
+  .social-login-btn:hover {
+    color: #111827;
+    border-color: #111827;
+  }
+
+  .social-login-btn--google i {
+    color: #ea4335;
+  }
+
+  .social-login-btn--facebook {
+    background: #1877f2;
+    border-color: #1877f2;
+    color: #fff;
+  }
+
+  .social-login-btn--facebook:hover {
+    color: #fff;
+    border-color: #0f5fc9;
+    background: #0f5fc9;
+  }
+
+  @media (max-width: 575.98px) {
+    .social-login-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+@endpush

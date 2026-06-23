@@ -5,6 +5,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PcBuildController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\SupportChatController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
@@ -12,6 +13,7 @@ use App\Http\Middleware\AuthAdmin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Auth\SocialiteController;
 
 
 
@@ -22,6 +24,12 @@ Auth::routes();
 
 Route::get('/login/customer', [AuthLoginController::class, 'showLoginForm'])->name('login.customer');
 Route::get('/login/staff', [AuthLoginController::class, 'showLoginForm'])->name('login.staff');
+Route::get('/login/{provider}', [AuthLoginController::class, 'redirectToProvider'])
+    ->whereIn('provider', ['google', 'facebook'])
+    ->name('social.redirect');
+Route::get('/login/{provider}/callback', [AuthLoginController::class, 'handleProviderCallback'])
+    ->whereIn('provider', ['google', 'facebook'])
+    ->name('social.callback');
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/search', [HomeController::class, 'search'])->name('home.search');
@@ -74,6 +82,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contact-us', [HomeController::class, 'contact'])->name('home.contact');
 
     Route::post('/contact/store', [HomeController::class, 'contact_store'])->name('home.contact.store');
+
+    Route::get('/support-chat/state', [SupportChatController::class, 'customerState'])->name('support.customer.state');
+    Route::post('/support-chat/start', [SupportChatController::class, 'customerStart'])->name('support.customer.start');
+    Route::post('/support-chat/message', [SupportChatController::class, 'customerMessage'])->name('support.customer.message');
+    Route::post('/support-chat/close', [SupportChatController::class, 'customerClose'])->name('support.customer.close');
 
 });
 
@@ -174,11 +187,26 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
 
     Route::get('/admin/search', [AdminController::class, 'search'])->name('admin.search');
 
+    Route::get('/admin/support-chat/state', [SupportChatController::class, 'staffState'])->name('support.staff.state');
+    Route::get('/admin/support-chat/{conversation}/open', [SupportChatController::class, 'staffOpen'])->name('support.staff.open');
+    Route::post('/admin/support-chat/{conversation}/accept', [SupportChatController::class, 'staffAccept'])->name('support.staff.accept');
+    Route::post('/admin/support-chat/{conversation}/decline', [SupportChatController::class, 'staffDecline'])->name('support.staff.decline');
+    Route::post('/admin/support-chat/{conversation}/message', [SupportChatController::class, 'staffMessage'])->name('support.staff.message');
+    Route::post('/admin/support-chat/{conversation}/close', [SupportChatController::class, 'staffClose'])->name('support.staff.close');
+    Route::get('/admin/internal-chat/{staff?}', [SupportChatController::class, 'internalOpen'])->name('support.internal.open');
+    Route::post('/admin/internal-chat/{staff?}', [SupportChatController::class, 'internalMessage'])->name('support.internal.message');
+
     Route::get('/payment', [PaymentController::class, 'index']);
 
     Route::match(['get', 'post'], '/vnpay-create', [PaymentController::class, 'createPayment'])->name('vnpay.create');
 
     Route::get('/vnpay-return', [PaymentController::class, 'vnpayReturn'])->name('vnpay.return');
+
+
+    
+
+Route::get('/auth/{provider}/redirect', [SocialiteController::class, 'redirect'])->name('social.redirect');
+Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback'])->name('social.callback');
 
 
 

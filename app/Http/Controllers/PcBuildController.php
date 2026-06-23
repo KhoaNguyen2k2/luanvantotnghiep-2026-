@@ -343,6 +343,7 @@ class PcBuildController extends Controller
         $purpose = $validated['purpose'] ?? 'balance';
 
         $response = $gemini->recommendBuild($budget, $purpose);
+        $response['products'] = $gemini->getProductsWithStockInfo(array_keys($this->slotDefinitions()));
 
         return response()->json($response);
     }

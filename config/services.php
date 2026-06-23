@@ -43,4 +43,16 @@ return [
         'model' => env('OPENROUTER_MODEL', 'mistralai/mistral-large'),
     ],
 
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT_URI', rtrim(env('APP_URL', 'http://127.0.0.1:8000'), '/') . '/login/facebook/callback'),
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', rtrim(env('APP_URL', 'http://127.0.0.1:8000'), '/') . '/login/google/callback'),
+    ],
+
 ];

@@ -388,6 +388,29 @@ document.addEventListener('DOMContentLoaded', function() {
   const checkoutBtn = document.getElementById('checkoutBtn');
   const selectedProductsDiv = document.getElementById('selectedProducts');
   let isLoading = false;
+  const componentLabels = {
+    cpu: 'CPU',
+    motherboard: 'Mainboard',
+    ram: 'RAM',
+    gpu: 'VGA',
+    psu: 'Nguồn',
+    storage: 'Ổ cứng',
+    cooling: 'Tản nhiệt',
+    case: 'Case'
+  };
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text == null ? '' : String(text);
+    return div.innerHTML;
+  }
+
+  function cleanAiAdvice(text) {
+    return String(text || '')
+      .replace(/===.*DATABASE[\s\S]*$/i, '')
+      .replace(/(?:\n|^)\s*(?:✅|âœ…).*?(?:ID:\s*\d+)?(?=\n|$)/g, '')
+      .trim();
+  }
 
   // Add message to chat
   function addChatMessage(text, isUser = false) {
@@ -429,9 +452,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
       const data = await response.json();
       const chatText = data.response || (data.error ? '❌ Lỗi: ' + data.error : 'Không thể nhận phản hồi');
-      addChatMessage(chatText);
+      addChatMessage(cleanAiAdvice(chatText) || 'Mình đã đưa cấu hình gợi ý sang phần bên phải để bạn dễ xem.');
       if (data.products) {
-        displayProductsFromResponse(data.products);
+        applyProductsFromAi(data.products);
       }
     } catch (error) {
       addChatMessage('❌ Lỗi: ' + error.message);
@@ -465,9 +488,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
       const data = await response.json();
       if (data.success) {
-        addChatMessage(data.recommendations);
-        // Try to extract and display products
-        displayRecommendedProducts();
+        addChatMessage(cleanAiAdvice(data.recommendations) || 'Mình đã đưa cấu hình gợi ý sang phần bên phải để bạn dễ xem.');
+        if (data.products) {
+          applyProductsFromAi(data.products);
+        }
       } else {
         addChatMessage('❌ ' + (data.error || 'Không thể lấy gợi ý'));
       }
@@ -486,6 +510,39 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Hiển thị sản phẩm từ phản hồi của AI
+  function applyProductsFromAi(productsData) {
+    const nextSelected = {};
+    const missingComponents = [];
+
+    for (const [componentType, items] of Object.entries(productsData || {})) {
+      const firstAvailable = items && items.has_available && Array.isArray(items.in_stock)
+        ? items.in_stock[0]
+        : null;
+
+      if (firstAvailable) {
+        nextSelected[firstAvailable.id] = {
+          id: parseInt(firstAvailable.id),
+          name: firstAvailable.name,
+          price: parseFloat(firstAvailable.price || 0),
+          componentType: componentType,
+          quantity: firstAvailable.quantity
+        };
+      } else {
+        missingComponents.push(componentLabels[componentType] || componentType);
+      }
+    }
+
+    selectedProducts = nextSelected;
+    updateConfigDisplay();
+
+    const pickedCount = Object.keys(nextSelected).length;
+    const missingText = missingComponents.length
+      ? ` Một số nhóm chưa có hàng phù hợp: ${missingComponents.join(', ')}.`
+      : '';
+
+    addChatMessage(`Mình đã đưa ${pickedCount} linh kiện gợi ý vào phần "Cấu hình được chọn".${missingText}`);
+  }
+
   function displayProductsFromResponse(productsData) {
     let html = '<div class="ai-product-section"><strong>💾 Sản phẩm gợi ý từ Kho hàng:</strong></div>';
     
@@ -573,10 +630,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     products.forEach(product => {
       const formattedPrice = new Intl.NumberFormat('vi-VN').format(product.price);
+      const componentLabel = componentLabels[product.componentType] || product.componentType || 'Linh kiện';
       html += `
-        <div class="product-item selected d-flex justify-content-between align-items-center" onclick="toggleProduct(${product.id}, '${product.name}', ${product.price})">
+        <div class="product-item selected d-flex justify-content-between align-items-center" data-product-id="${product.id}">
           <div class="flex-grow-1">
-            <div class="product-item-name">${product.name}</div>
+            <div class="small text-uppercase text-muted fw-bold mb-1">${escapeHtml(componentLabel)}</div>
+            <div class="product-item-name">${escapeHtml(product.name)}</div>
             <div class="product-item-price">${formattedPrice}₫</div>
           </div>
           <button class="btn btn-sm btn-outline-danger">✕</button>
@@ -596,6 +655,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update hidden form
     selectedProductsDiv.innerHTML = products.map(p => `<input type="hidden" name="products[]" value="${p.id}">`).join('');
   }
+
+  buildConfigDiv.addEventListener('click', function(e) {
+    if (!e.target.closest('button')) return;
+    const item = e.target.closest('.product-item');
+    const productId = item ? parseInt(item.dataset.productId) : null;
+    if (!productId) return;
+    delete selectedProducts[productId];
+    updateConfigDisplay();
+  });
 
   // Checkout
   checkoutBtn.addEventListener('click', async function() {

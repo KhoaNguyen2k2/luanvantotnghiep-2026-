@@ -36,10 +36,30 @@
 
             @php
                 $groups = [
+                    'top' => [
+                        'title' => 'Banner header',
+                        'slides' => $topSlides,
+                        'empty' => 'Chưa có banner header.',
+                    ],
+                    'side_left' => [
+                        'title' => 'Banner side left',
+                        'slides' => $sideLeftSlides,
+                        'empty' => 'Chưa có banner side left.',
+                    ],
+                    'side_right' => [
+                        'title' => 'Banner side right',
+                        'slides' => $sideRightSlides,
+                        'empty' => 'Chưa có banner side right.',
+                    ],
                     'home' => [
-                        'title' => 'Banner trang chủ',
+                        'title' => 'Banner chính trang chủ',
                         'slides' => $homeSlides,
                         'empty' => 'Chưa có banner trang chủ.',
+                    ],
+                    'promo' => [
+                        'title' => 'Banner nhỏ trang chủ',
+                        'slides' => $promoSlides,
+                        'empty' => 'Chưa có banner nhỏ trang chủ.',
                     ],
                     'shop' => [
                         'title' => 'Banner mua sắm',
@@ -86,7 +106,21 @@
                                                 >
                                             </div>
                                         </td>
-                                        <td>{{ $slide->placement === 'shop' ? 'Mua sắm' : 'Trang chủ' }}</td>
+                                        <td>
+                                            @if($slide->placement === 'top')
+                                                Header
+                                            @elseif($slide->placement === 'side_left')
+                                                Side left
+                                            @elseif($slide->placement === 'side_right')
+                                                Side right
+                                            @elseif($slide->placement === 'promo')
+                                                Banner nhỏ
+                                            @elseif($slide->placement === 'shop')
+                                                Mua sắm
+                                            @else
+                                                Trang chủ
+                                            @endif
+                                        </td>
                                         <td>{{ $slide->tagline }}</td>
                                         <td><strong>{{ $slide->title }}</strong></td>
                                         <td>{{ $slide->subtitle }}</td>

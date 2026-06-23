@@ -310,7 +310,7 @@ class AdminController extends Controller
         $this->GenerateBrandThumbaislImage($image, $file_name);
         $brand->image = $file_name;
         $brand->save();
-        return redirect()->route('admin.brands')->with('status', 'ÄÃ£ thÃªm thÆ°Æ¡ng hiá»‡u thÃ nh cÃ´ng!');
+        return redirect()->route('admin.brands')->with('status', 'Đã thêm thương hiệu thành công!');
 
     }
 
@@ -343,7 +343,7 @@ class AdminController extends Controller
         }
         
         $brand->save();
-        return redirect()->route('admin.brands')->with('status', 'ÄÃ£ cáº­p nháº­t thÆ°Æ¡ng hiá»‡u thÃ nh cÃ´ng!');
+        return redirect()->route('admin.brands')->with('status', 'Đã cập nhật thương hiệu thành công!');
     }
 
     public function GenerateBrandThumbaislImage($image, $imageName)
@@ -367,7 +367,7 @@ class AdminController extends Controller
             File::delete(public_path('uploads/brands/'). '/' . $brand->image);
         }
         $brand->delete();
-        return redirect()->route('admin.brands')->with('status', 'ÄÃ£ xÃ³a thÆ°Æ¡ng hiá»‡u thÃ nh cÃ´ng!');
+        return redirect()->route('admin.brands')->with('status', 'Đã xóa thương hiệu thành công!');
     }
     
     public function categories()
@@ -397,7 +397,7 @@ class AdminController extends Controller
         $this->GenerateCategoryThumbnailImage($image, $file_name);
         $category->image = $file_name;
         $category->save();
-        return redirect()->route('admin.categories')->with('status', 'ÄÃ£ thÃªm danh má»¥c thÃ nh cÃ´ng!');
+        return redirect()->route('admin.categories')->with('status', 'Đã thêm danh mục thành công!');
     }
 
     public function GenerateCategoryThumbnailImage($image, $imageName)
@@ -440,7 +440,7 @@ class AdminController extends Controller
         }
         
         $category->save();
-        return redirect()->route('admin.categories')->with('status', 'ÄÃ£ cáº­p nháº­t danh má»¥c thÃ nh cÃ´ng!');
+        return redirect()->route('admin.categories')->with('status', 'Đã cập nhật danh mục thành công!');
     }
     
 
@@ -451,7 +451,7 @@ class AdminController extends Controller
             File::delete(public_path('uploads/categories/'). '/' . $category->image);
         }
         $category->delete();
-        return redirect()->route('admin.categories')->with('status', 'ÄÃ£ xÃ³a danh má»¥c thÃ nh cÃ´ng!');
+        return redirect()->route('admin.categories')->with('status', 'Đã xóa danh mục thành công!');
     }
 
     public function products(Request $request)
@@ -558,7 +558,7 @@ class AdminController extends Controller
         $product->images = $gallery_images;
         $product->save();
 
-        return redirect()->route('admin.products')->with('status', 'ÄÃ£ thÃªm sáº£n pháº©m thÃ nh cÃ´ng!');
+        return redirect()->route('admin.products')->with('status', 'Đã thêm sản phẩm thành công!');
     }
 
 
@@ -726,7 +726,7 @@ class AdminController extends Controller
 
         $product->save();
 
-        return redirect()->route('admin.products')->with('status', 'ÄÃ£ cáº­p nháº­t sáº£n pháº©m thÃ nh cÃ´ng!');
+        return redirect()->route('admin.products')->with('status', 'Đã cập nhật sản phẩm thành công!');
     }
 
 
@@ -749,7 +749,7 @@ class AdminController extends Controller
             }
         }
         $product->delete();
-        return redirect()->route('admin.products')->with('status', 'ÄÃ£ xÃ³a sáº£n pháº©m thÃ nh cÃ´ng!');
+        return redirect()->route('admin.products')->with('status', 'Đã xóa sản phẩm thành công!');
     }
 
     public function coupons()
@@ -787,7 +787,7 @@ class AdminController extends Controller
         $coupon->expiry_date = $request->date('expiry_date');
         $coupon->save();
 
-        return redirect()->route('admin.coupons')->with('status', 'ÄÃ£ thÃªm coupon thÃ nh cÃ´ng!');
+        return redirect()->route('admin.coupons')->with('status', 'Đã thêm coupon thành công!');
     }
 
     public function coupon_edit($id)
@@ -821,7 +821,7 @@ class AdminController extends Controller
         $coupon->expiry_date = $request->date('expiry_date');
         $coupon->save();
 
-        return redirect()->route('admin.coupons')->with('status', 'ÄÃ£ cáº­p nháº­t coupon thÃ nh cÃ´ng!');
+        return redirect()->route('admin.coupons')->with('status', 'Đã cập nhật coupon thành công!');
     }
 
     public function coupon_delete($id)
@@ -829,7 +829,7 @@ class AdminController extends Controller
         $coupon = Coupon::findOrFail($id);
         $coupon->delete();
 
-        return redirect()->route('admin.coupons')->with('status', 'ÄÃ£ xÃ³a coupon thÃ nh cÃ´ng!');
+        return redirect()->route('admin.coupons')->with('status', 'Đã xóa coupon thành công!');
     }
 
     public function orders()
@@ -893,15 +893,19 @@ class AdminController extends Controller
             }
             return redirect()
                 ->route('admin.order.details', ['order_id' => $order->id])
-                ->with('status', 'Cáº­p nháº­t tráº¡ng thÃ¡i Ä‘Æ¡n hÃ ng thÃ nh cÃ´ng!');
+                ->with('status', 'Cập nhật trạng thái đơn hàng thành công!');
     }
 
     public function slides()
     {
+        $topSlides = Slide::where('placement', 'top')->orderBy('id', 'DESC')->get();
+        $sideLeftSlides = Slide::where('placement', 'side_left')->orderBy('id', 'DESC')->get();
+        $sideRightSlides = Slide::where('placement', 'side_right')->orderBy('id', 'DESC')->get();
         $homeSlides = Slide::where('placement', 'home')->orderBy('id', 'DESC')->get();
+        $promoSlides = Slide::where('placement', 'promo')->orderBy('id', 'DESC')->get();
         $shopSlides = Slide::where('placement', 'shop')->orderBy('id', 'DESC')->get();
 
-        return view('admin.slides', compact('homeSlides', 'shopSlides'));
+        return view('admin.slides', compact('topSlides', 'sideLeftSlides', 'sideRightSlides', 'homeSlides', 'promoSlides', 'shopSlides'));
         
     }   
 
@@ -917,7 +921,7 @@ class AdminController extends Controller
             'title' => 'required',
             'subtitle' => 'required',   
             'link' => 'required|string|max:255',
-            'placement' => ['required', Rule::in(['home', 'shop'])],
+            'placement' => ['required', Rule::in(['top', 'side_left', 'side_right', 'home', 'promo', 'shop'])],
             'status' => 'required|in:0,1',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
@@ -946,6 +950,30 @@ class AdminController extends Controller
           File::makeDirectory($destinationPath, 0755, true);
       }
       $img = Image::read($image->path());
+      if ($placement === 'top') {
+          $img->cover(1920, 168, "center")
+              ->sharpen(10)
+              ->save($destinationPath . '/' . $imageName, quality: 95);
+
+          return;
+      }
+
+      if ($placement === 'promo') {
+          $img->cover(520, 180, "center")
+              ->sharpen(10)
+              ->save($destinationPath . '/' . $imageName, quality: 95);
+
+          return;
+      }
+
+      if (in_array($placement, ['side_left', 'side_right'], true)) {
+          $img->cover(180, 520, "center")
+              ->sharpen(10)
+              ->save($destinationPath . '/' . $imageName, quality: 95);
+
+          return;
+      }
+
       if ($placement === 'shop') {
           $img->cover(1440, 480, "center")
               ->sharpen(10)
@@ -972,7 +1000,7 @@ class AdminController extends Controller
             'title' => 'required',
             'subtitle' => 'required',   
             'link' => 'required|string|max:255',
-            'placement' => ['required', Rule::in(['home', 'shop'])],
+            'placement' => ['required', Rule::in(['top', 'side_left', 'side_right', 'home', 'promo', 'shop'])],
             'status' => 'required|in:0,1',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);

@@ -219,6 +219,6 @@ PROMPT;
             $formattedResponse .= "\n";
         }
 
-        return ['success' => true, 'response' => $formattedResponse, 'products' => $productInfo];
+        return ['success' => true, 'response' => $aiResponse, 'products' => $productInfo];
     }
 }

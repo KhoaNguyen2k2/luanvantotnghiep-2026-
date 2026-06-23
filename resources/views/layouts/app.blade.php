@@ -25,10 +25,379 @@
     crossorigin="anonymous" referrerpolicy="no-referrer">
     @stack("styles")
 </head>
-<body class="gradient-bg">
+<body class="gradient-bg kcc-layout">
   @php
     $cartQtyTotal = (int) Cart::instance('cart')->content()->sum(fn ($row) => (int) $row->qty);
+    $topHeaderSlide = \App\Models\Slide::where('placement', 'top')->where('status', 1)->latest('id')->first();
+    $sideLeftSlide = \App\Models\Slide::where('placement', 'side_left')->where('status', 1)->latest('id')->first();
+    $sideRightSlide = \App\Models\Slide::where('placement', 'side_right')->where('status', 1)->latest('id')->first();
   @endphp
+  <style>
+    .kcc-layout {
+      display: flex;
+      flex-direction: column;
+    }
+    .kcc-top-banner {
+      order: 1;
+      display: block;
+      min-height: 84px;
+      background: #140604;
+      overflow: hidden;
+      position: relative;
+    }
+    .kcc-top-banner img {
+      width: 100%;
+      height: clamp(82px, 8.8vw, 168px);
+      object-fit: cover;
+      display: block;
+    }
+    .kcc-top-banner__fallback {
+      min-height: clamp(82px, 8.8vw, 168px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 82% 45%, rgba(255, 115, 27, .42), transparent 30%),
+        linear-gradient(100deg, #120707 0%, #3c0804 42%, #ff6417 100%);
+      color: #fff;
+      text-align: center;
+      padding: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      font-size: clamp(24px, 4vw, 64px);
+      text-shadow: 0 4px 16px rgba(0,0,0,.5);
+    }
+    .kcc-top-banner__logo {
+      position: absolute;
+      left: clamp(18px, 4vw, 72px);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(118px, 13vw, 230px);
+      min-height: clamp(58px, 6vw, 94px);
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .25);
+    }
+    .kcc-top-banner__logo img {
+      width: 100%;
+      height: auto;
+      max-height: 76px;
+      object-fit: contain;
+      display: block;
+    }
+    .kcc-service-strip {
+      order: 2;
+      background: #e94313;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .kcc-service-strip .container {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .kcc-service-strip a,
+    .kcc-service-strip span {
+      color: #fff;
+      white-space: nowrap;
+    }
+    .kcc-service-strip .pill {
+      background: #ffd22e;
+      color: #dc2626;
+      border-radius: 999px;
+      padding: 5px 12px;
+    }
+    .kcc-top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(16px, 3vw, 48px);
+      flex: 1;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .kcc-top-nav a {
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .kcc-top-nav a:hover {
+      color: #ffe08a;
+    }
+    .kcc-search-pill {
+      position: relative;
+      width: 100%;
+    }
+    .kcc-search-pill input {
+      width: 100%;
+      height: 48px;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: 0 62px 0 22px;
+      font-size: 15px;
+      background: #fff;
+    }
+    .kcc-search-pill button {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      background: #ff741f;
+      color: #fff;
+      font-size: 18px;
+    }
+    .kcc-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      color: #111827;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .kcc-header-actions .action {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      white-space: nowrap;
+      color: #111827;
+    }
+    .kcc-header-actions i {
+      color: #ff6417;
+      font-size: 25px;
+    }
+    .header.header-fullwidth {
+      order: 3;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, .06);
+      background: #fff !important;
+      position: static !important;
+      z-index: 12;
+    }
+    .kcc-layout > main {
+      order: 4;
+      display: flex;
+      flex-direction: column;
+    }
+    .kcc-layout > main > * {
+      order: 2;
+    }
+    .kcc-layout > .kcc-category-strip {
+      order: 3;
+    }
+    .kcc-layout > footer,
+    .kcc-layout > .kcc-side-banner,
+    .kcc-layout > .support-chat,
+    .kcc-layout > .operator-chat,
+    .kcc-layout > #scrollTop,
+    .kcc-layout > .page-overlay {
+      order: 5;
+    }
+    .header-desk_type_1 {
+      min-height: 92px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 10px 0;
+    }
+    .header-desk_type_1 > .navigation {
+      display: none;
+    }
+    .header-desk_type_1 > .logo {
+      display: none;
+    }
+    .header-desk_type_1 > .logo .logo__image {
+      width: 124px !important;
+      max-width: 124px !important;
+      max-height: 68px;
+      object-fit: contain;
+    }
+    .header-tools {
+      margin-left: auto;
+      gap: 18px;
+      width: 100%;
+      justify-content: flex-end;
+    }
+    .header-desk_type_1 {
+      justify-content: flex-end;
+    }
+    .kcc-header-search {
+      position: relative;
+      flex: 1 1 auto;
+      max-width: 1280px;
+      margin-right: 14px;
+    }
+    .kcc-header-search__input {
+      width: 100%;
+      height: 52px;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      background: #fff;
+      padding: 0 58px 0 24px;
+      font-size: 15px;
+      font-weight: 500;
+      outline: 0;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .kcc-header-search__input:focus {
+      border-color: #ff6417;
+      box-shadow: 0 0 0 4px rgba(255, 100, 23, .12);
+    }
+    .kcc-header-search__submit {
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #111827;
+      transform: translateY(-50%);
+    }
+    .kcc-header-search__results {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      z-index: 30;
+      max-height: 320px;
+      overflow-y: auto;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, .14);
+    }
+    .kcc-header-search__results:empty {
+      display: none;
+    }
+    .kcc-search-popup-trigger {
+      display: none;
+    }
+    .kcc-side-banner {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 40;
+      width: 128px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #111827;
+      box-shadow: 0 14px 32px rgba(15, 23, 42, .25);
+    }
+    .kcc-side-banner--left {
+      left: 10px;
+    }
+    .kcc-side-banner--right {
+      right: 10px;
+    }
+    .kcc-side-banner img {
+      width: 100%;
+      height: auto;
+      min-height: 360px;
+      max-height: 520px;
+      object-fit: cover;
+      display: block;
+    }
+    .kcc-side-banner__close {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 22px;
+      height: 22px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, .62);
+      color: #fff;
+      font-size: 16px;
+      line-height: 20px;
+      z-index: 2;
+    }
+    @media (max-width: 1399.98px) {
+      .kcc-side-banner {
+        display: none;
+      }
+    }
+    .navigation__link {
+      font-weight: 800;
+    }
+    @media (max-width: 991.98px) {
+      .header-tools {
+        width: auto;
+      }
+      .kcc-header-search {
+        display: none;
+      }
+      .kcc-header-actions {
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .kcc-service-strip .container {
+        justify-content: center;
+      }
+      .kcc-top-nav {
+        overflow-x: auto;
+        justify-content: flex-start;
+        width: 100%;
+      }
+    }
+  </style>
+  <a class="kcc-top-banner" href="{{ $topHeaderSlide?->link ?: route('shop.index') }}">
+    <span class="kcc-top-banner__logo">
+      <img src="{{ asset('images/logo/logo.png') }}" alt="PC Parts">
+    </span>
+    @if($topHeaderSlide?->image)
+      <img src="{{ asset('uploads/slides/' . $topHeaderSlide->image) }}?v={{ optional($topHeaderSlide->updated_at)->timestamp }}" alt="{{ $topHeaderSlide->title }}">
+    @else
+      <div class="kcc-top-banner__fallback">Build PC tối ưu ngân sách</div>
+    @endif
+  </a>
+  <div class="kcc-service-strip">
+    <div class="container">
+      <ul class="kcc-top-nav">
+        <li><a href="{{ route('home.index') }}">Trang chủ</a></li>
+        <li><a href="{{ route('shop.index') }}">Mua sắm</a></li>
+        <li><a href="{{ route('cart.index') }}">Giỏ hàng</a></li>
+        <li><a href="about.html">Giới thiệu</a></li>
+        <li><a href="{{ route('home.contact') }}">Liên hệ</a></li>
+        <li><a href="{{ route('build.pc.ai') }}">Build PC</a></li>
+      </ul>
+    </div>
+  </div>
+  @if($sideLeftSlide?->image)
+    <div class="kcc-side-banner kcc-side-banner--left" data-side-banner>
+      <button class="kcc-side-banner__close" type="button" aria-label="Đóng banner" onclick="this.closest('[data-side-banner]').style.display='none'">&times;</button>
+      <a href="{{ $sideLeftSlide->link ?: route('shop.index') }}">
+        <img src="{{ asset('uploads/slides/' . $sideLeftSlide->image) }}?v={{ optional($sideLeftSlide->updated_at)->timestamp }}" alt="{{ $sideLeftSlide->title }}">
+      </a>
+    </div>
+  @endif
+  @if($sideRightSlide?->image)
+    <div class="kcc-side-banner kcc-side-banner--right" data-side-banner>
+      <button class="kcc-side-banner__close" type="button" aria-label="Đóng banner" onclick="this.closest('[data-side-banner]').style.display='none'">&times;</button>
+      <a href="{{ $sideRightSlide->link ?: route('shop.index') }}">
+        <img src="{{ asset('uploads/slides/' . $sideRightSlide->image) }}?v={{ optional($sideRightSlide->updated_at)->timestamp }}" alt="{{ $sideRightSlide->title }}">
+      </a>
+    </div>
+  @endif
+  @yield('category-strip')
   <svg class="d-none">
     <symbol id="icon_nav" viewBox="0 0 25 18">
       <rect width="25" height="2" />
@@ -461,7 +830,18 @@
         </nav>
 
         <div class="header-tools d-flex align-items-center">
-          <div class="header-tools__item hover-container">
+          <form action="{{ route('shop.index') }}" method="GET" class="search-field kcc-header-search">
+            <input class="search-field__input kcc-header-search__input" type="search" name="q" autocomplete="off"
+              value="{{ request('q') }}" placeholder="Tim san pham..." />
+            <button class="kcc-header-search__submit" type="submit" aria-label="Tim kiem">
+              <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <use href="#icon_search" />
+              </svg>
+            </button>
+            <ul id="box-content-search" class="kcc-header-search__results list-unstyled mb-0"></ul>
+          </form>
+          <div class="header-tools__item hover-container kcc-search-popup-trigger">
             <div class="js-hover__open position-relative">
               <a class="js-search-popup search-field__actor" href="#">
                 <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
@@ -524,6 +904,20 @@
             <span class="cart-amount d-block position-absolute js-cart-items-count">{{ Cart::instance('wishlist')->content()->count() }}</span>
             @endif
           </a>
+
+          @auth
+            @php
+              $headerUser = Auth::user();
+              $canUseSupportCenter = $headerUser->utype === 'ADM'
+                  || ($headerUser->utype === 'ADMM' && strtolower($headerUser->email) === 'admint@lvtn.vn');
+            @endphp
+            @if($canUseSupportCenter)
+              <button type="button" id="supportNotificationBell" class="header-tools__item support-notification-bell" aria-label="Thông báo chat">
+                <i class="fa fa-bell-o"></i>
+                <span id="supportNotificationCount" class="support-notification-bell__count" style="display:none;">0</span>
+              </button>
+            @endif
+          @endauth
 
           <a href="{{ route('cart.index') }}" class="header-tools__item header-tools__cart">
             <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
@@ -749,6 +1143,8 @@
       });
     })(jQuery);
   </script>
+  @include('partials.support-chat-widget')
+  @include('admin.partials.support-chat-panel')
   @stack("scripts")
 </body>
 </html>

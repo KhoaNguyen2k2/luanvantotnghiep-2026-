@@ -229,6 +229,19 @@
 
                             </div>
                             <div class="header-grid">
+                                @php
+                                    $canUseSupportCenter = $adminUser
+                                        && (
+                                            $isSuperAdmin
+                                            || $adminUser->utype === 'ADM'
+                                        );
+                                @endphp
+                                @if($canUseSupportCenter)
+                                    <button type="button" id="supportNotificationBell" class="support-notification-bell" aria-label="Thông báo chat">
+                                        <i class="icon-mail"></i>
+                                        <span id="supportNotificationCount" class="support-notification-bell__count" style="display:none;">0</span>
+                                    </button>
+                                @endif
 
                                 <div class="popup-wrap user type-header">
                                     <div class="dropdown">
@@ -288,7 +301,6 @@
             </div>
         </div>
     </div>
-
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>   
@@ -479,6 +491,7 @@
     })(jQuery);
   </script>
 
+    @include('admin.partials.support-chat-panel')
     @stack("scripts")
 </body>
 

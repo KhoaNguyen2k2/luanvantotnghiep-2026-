@@ -45,7 +45,11 @@
                     <div class="select flex-grow">
                         <select name="placement" required>
                             <option value="">Chọn nơi hiển thị</option>
-                            <option value="home" {{ old('placement', $slide->placement ?? 'home') === 'home' ? 'selected' : '' }}>Banner trang chủ</option>
+                            <option value="top" {{ old('placement', $slide->placement ?? 'home') === 'top' ? 'selected' : '' }}>Banner header</option>
+                            <option value="side_left" {{ old('placement', $slide->placement ?? 'home') === 'side_left' ? 'selected' : '' }}>Banner side left</option>
+                            <option value="side_right" {{ old('placement', $slide->placement ?? 'home') === 'side_right' ? 'selected' : '' }}>Banner side right</option>
+                            <option value="home" {{ old('placement', $slide->placement ?? 'home') === 'home' ? 'selected' : '' }}>Banner chính trang chủ</option>
+                            <option value="promo" {{ old('placement', $slide->placement ?? 'home') === 'promo' ? 'selected' : '' }}>Banner nhỏ trang chủ</option>
                             <option value="shop" {{ old('placement', $slide->placement ?? 'home') === 'shop' ? 'selected' : '' }}>Banner mua sắm</option>
                         </select>
                     </div>

@@ -1,8 +1,117 @@
-```blade
 @extends('layouts.admin')
+@push('styles')
+<style>
+    .admin-products-page .flex.mb-27 {
+        margin-bottom: 18px;
+    }
+
+    .admin-products-page .wg-box {
+        gap: 14px;
+        padding: 18px;
+    }
+
+    .admin-products-page .table-responsive {
+        overflow-x: auto;
+    }
+
+    .admin-products-page .table {
+        table-layout: fixed;
+        margin-bottom: 0;
+        min-width: 1180px;
+    }
+
+    .admin-products-page .table-bordered > :not(caption) > * > * {
+        padding: 6px 8px;
+        line-height: 1.25;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    .admin-products-page .table th:nth-child(1),
+    .admin-products-page .table td:nth-child(1) {
+        width: 46px;
+    }
+
+    .admin-products-page .table th:nth-child(2),
+    .admin-products-page .table td:nth-child(2) {
+        width: 220px;
+        padding-bottom: 6px;
+    }
+
+    .admin-products-page .table th:nth-child(11),
+    .admin-products-page .table td:nth-child(11) {
+        width: 116px;
+    }
+
+    .admin-products-page .pname {
+        align-items: center;
+        gap: 8px;
+    }
+
+    .admin-products-page .pname > .image {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+    }
+
+    .admin-products-page .pname img.image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .admin-products-page .pname .name {
+        min-width: 0;
+    }
+
+    .admin-products-page .pname .body-title-2 {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-height: 1.18;
+    }
+
+    .admin-products-page .pname .text-tiny {
+        margin-top: 2px !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 1.15;
+    }
+
+    .admin-products-page .divider {
+        margin: 0;
+    }
+
+    .admin-products-page .wgp-pagination {
+        padding-top: 4px;
+    }
+
+    .admin-products-page .wgp-pagination p {
+        margin-bottom: 0;
+        font-size: 13px;
+    }
+
+    .admin-products-page .wgp-pagination .pagination {
+        margin: 0 0 0 14px;
+    }
+
+    .admin-products-page .wgp-pagination .page-link {
+        min-width: 30px;
+        height: 30px;
+        padding: 0 9px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        line-height: 1;
+    }
+</style>
+@endpush
 @section('content')
 
-<div class="main-content-inner">
+<div class="main-content-inner admin-products-page">
     <div class="main-content-wrap">
         <div class="flex items-center flex-wrap justify-between gap20 mb-27">
             <h3>Tất cả sản phẩm</h3>
@@ -167,4 +276,3 @@
     });
 </script>
 @endpush
-```

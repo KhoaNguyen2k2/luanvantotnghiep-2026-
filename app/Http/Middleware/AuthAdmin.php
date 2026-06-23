@@ -37,6 +37,14 @@ class AuthAdmin
                         'admin.staff.update',
                         'admin.staff.delete',
                         'admin.customers',
+                        'support.staff.state',
+                        'support.staff.open',
+                        'support.staff.accept',
+                        'support.staff.decline',
+                        'support.staff.message',
+                        'support.staff.close',
+                        'support.internal.open',
+                        'support.internal.message',
                     ];
 
                     if(in_array($request->route()?->getName(), $allowedRoutes, true)) {

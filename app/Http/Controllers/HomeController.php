@@ -19,6 +19,11 @@ class HomeController extends Controller
             ->where('status', '1')
             ->take($homeBannerLimit)
             ->get();
+        $promoSlides = Slide::where('placement', 'promo')
+            ->where('status', '1')
+            ->orderBy('id', 'DESC')
+            ->take(6)
+            ->get();
         $categories = Category::orderBy('name')->get();
         $sproducts = Product::whereNotNull('sale_price')
             ->where('sale_price', '<>', '')
@@ -26,7 +31,7 @@ class HomeController extends Controller
             ->take(8)
             ->get();
         $fproducts = Product::where('featured', 1)->take(8)->get();
-        return view('index',compact('slides','categories','sproducts','fproducts'));
+        return view('index',compact('slides','promoSlides','categories','sproducts','fproducts'));
     }
 
     public function contact()

@@ -1,8 +1,129 @@
-```blade id="n8qplm"
 @extends('layouts.admin')
+@push('styles')
+<style>
+    .admin-product-edit-page .flex.mb-27 {
+        margin-bottom: 16px;
+    }
+
+    .admin-product-edit-page .tf-section-2 {
+        gap: 16px;
+        align-items: start;
+    }
+
+    .admin-product-edit-page .wg-box {
+        gap: 14px;
+        padding: 18px 20px;
+    }
+
+    .admin-product-edit-page .body-title.mb-10 {
+        margin-bottom: 6px;
+    }
+
+    .admin-product-edit-page input.mb-10,
+    .admin-product-edit-page textarea.mb-10,
+    .admin-product-edit-page .select.mb-10 {
+        margin-bottom: 5px !important;
+    }
+
+    .admin-product-edit-page form input[type=text],
+    .admin-product-edit-page form textarea {
+        padding: 11px 16px;
+        border-radius: 10px;
+    }
+
+    .admin-product-edit-page form textarea {
+        height: 148px !important;
+    }
+
+    .admin-product-edit-page textarea.ht-150 {
+        height: 126px !important;
+    }
+
+    .admin-product-edit-page .cols {
+        gap: 14px;
+    }
+
+    .admin-product-edit-page .upload-image {
+        gap: 8px;
+    }
+
+    .admin-product-edit-page .upload-image .item.up-load {
+        min-height: 132px;
+        overflow: hidden;
+    }
+
+    .admin-product-edit-page .upload-image .uploadfile {
+        min-height: 132px;
+        padding: 12px;
+    }
+
+    .admin-product-edit-page .upload-image .uploadfile .icon {
+        font-size: 32px;
+    }
+
+    .admin-product-edit-page .upload-image .uploadfile .body-text,
+    .admin-product-edit-page .upload-image .uploadfile .text-tiny {
+        font-size: 12px;
+        line-height: 1.35;
+    }
+
+    .admin-product-edit-page .product-main-upload .uploadfile.has-preview .icon,
+    .admin-product-edit-page .product-main-upload .uploadfile.has-preview .body-text {
+        display: none;
+    }
+
+    .admin-product-edit-page .product-main-upload__preview {
+        display: none;
+        width: 100%;
+        height: 100%;
+        min-height: 132px;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+    }
+
+    .admin-product-edit-page .product-main-upload__preview img {
+        max-width: 100%;
+        max-height: 116px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        border-radius: 8px;
+    }
+
+    .admin-product-edit-page .product-main-upload .uploadfile.has-preview .product-main-upload__preview {
+        display: flex;
+    }
+
+    .admin-product-edit-page .gallery-upload .gallery-existing,
+    .admin-product-edit-page .gallery-upload .gitems {
+        width: 92px;
+        height: 92px;
+        overflow: hidden;
+    }
+
+    .admin-product-edit-page .gallery-upload .gallery-existing img,
+    .admin-product-edit-page .gallery-upload .gitems img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .admin-product-edit-page .tf-button.w-full {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    @media (max-width: 1199.98px) {
+        .admin-product-edit-page .tf-section-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+@endpush
 @section('content')
 
-<div class="main-content-inner">
+<div class="main-content-inner admin-product-edit-page">
     <div class="main-content-wrap">
         <div class="flex items-center flex-wrap justify-between gap20 mb-27">
             <div>
@@ -161,15 +282,13 @@
                         Tải ảnh sản phẩm <span class="tf-color-1">*</span>
                     </div>
 
-                    <div class="upload-image flex-grow">
-                        @if($product->image)
-                            <div class="item" id="imgpreview" style="display:none">
-                                <img src="{{ asset('uploads/products/' . $product->image) }}" class="effect8" alt="{{ $product->name }}">
-                            </div>
-                        @endif
-
+                    <div class="upload-image flex-grow product-main-upload">
                         <div id="upload-file" class="item up-load">
-                            <label class="uploadfile" for="myFile">
+                            <label class="uploadfile {{ $product->image ? 'has-preview' : '' }}" for="myFile">
+                                <span class="product-main-upload__preview" id="imgpreview">
+                                    <img src="{{ $product->image ? asset('uploads/products/' . $product->image) : '#' }}" class="effect8" alt="{{ $product->name }}">
+                                </span>
+
                                 <span class="icon">
                                     <i class="icon-upload-cloud"></i>
                                 </span>
@@ -194,13 +313,13 @@
                         Tải thư viện ảnh
                     </div>
 
-                    <div class="upload-image mb-16">
+                    <div class="upload-image mb-16 gallery-upload">
                         @if($product->images)
                             @foreach(explode(',', $product->images) as $img)
                                 @php($img = trim($img))
 
                                 @if($img !== '')
-                                    <div class="item gitems" style="position:relative">
+                                    <div class="item gallery-existing" style="position:relative">
                                         <img src="{{ asset('uploads/products/' . $img) }}" alt="">
 
                                         <label style="position:absolute;top:6px;right:6px;background:#fff;padding:4px 6px;border-radius:6px;display:flex;gap:6px;align-items:center;font-size:12px;">
@@ -351,22 +470,22 @@
 
             if (file) {
                 $('#imgpreview img').attr('src', URL.createObjectURL(file));
-                $('#imgpreview').show();
+                $('#myFile').closest('.uploadfile').addClass('has-preview');
             }
         });
 
         $('#gFile').on('change', function(){
             const gphotos = this.files;
 
-            $('.gitems').remove();
+            $('.gitems--new').remove();
 
             if (!gphotos || gphotos.length === 0) {
                 return;
             }
 
             $.each(gphotos, function(key, val){
-                $('#galUpload').prepend(
-                    '<div class="item gitems"><img src="' + URL.createObjectURL(val) + '" alt=""></div>'
+                $('#galUpload').before(
+                    '<div class="item gitems gitems--new"><img src="' + URL.createObjectURL(val) + '" alt=""></div>'
                 );
             });
         });
@@ -385,4 +504,3 @@
     }
 </script>
 @endpush
-```
